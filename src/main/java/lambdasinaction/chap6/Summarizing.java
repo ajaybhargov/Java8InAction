@@ -1,14 +1,20 @@
 package lambdasinaction.chap6;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
+import java.util.function.BinaryOperator;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.summarizingInt;
+import static java.util.stream.Collectors.summingInt;
 import static lambdasinaction.chap6.Dish.menu;
 
 public class Summarizing {
 
-    public static void main(String ... args) {
+    public static void main(String... args) {
         System.out.println("Nr. of dishes: " + howManyDishes());
         System.out.println("The most caloric dish is: " + findMostCaloricDish());
         System.out.println("The most caloric dish is: " + findMostCaloricDishUsingComparator());

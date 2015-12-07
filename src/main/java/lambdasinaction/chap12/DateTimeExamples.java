@@ -1,8 +1,5 @@
 package lambdasinaction.chap12;
 
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
-import static java.time.temporal.TemporalAdjusters.nextOrSame;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -22,6 +19,9 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
 
 public class DateTimeExamples {
 
@@ -115,22 +115,13 @@ public class DateTimeExamples {
         date = date.with(temporal -> {
             DayOfWeek dow = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
             int dayToAdd = 1;
-            if (dow == DayOfWeek.FRIDAY) dayToAdd = 3;
-            if (dow == DayOfWeek.SATURDAY) dayToAdd = 2;
+            if (dow == DayOfWeek.FRIDAY)
+                dayToAdd = 3;
+            if (dow == DayOfWeek.SATURDAY)
+                dayToAdd = 2;
             return temporal.plus(dayToAdd, ChronoUnit.DAYS);
         });
         System.out.println(date);
-    }
-
-    private static class NextWorkingDay implements TemporalAdjuster {
-        @Override
-        public Temporal adjustInto(Temporal temporal) {
-            DayOfWeek dow = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
-            int dayToAdd = 1;
-            if (dow == DayOfWeek.FRIDAY) dayToAdd = 3;
-            if (dow == DayOfWeek.SATURDAY) dayToAdd = 2;
-            return temporal.plus(dayToAdd, ChronoUnit.DAYS);
-        }
     }
 
     private static void useDateFormatter() {
@@ -142,16 +133,25 @@ public class DateTimeExamples {
         System.out.println(date.format(formatter));
         System.out.println(date.format(italianFormatter));
 
-        DateTimeFormatter complexFormatter = new DateTimeFormatterBuilder()
-                .appendText(ChronoField.DAY_OF_MONTH)
-                .appendLiteral(". ")
-                .appendText(ChronoField.MONTH_OF_YEAR)
-                .appendLiteral(" ")
-                .appendText(ChronoField.YEAR)
-                .parseCaseInsensitive()
-                .toFormatter(Locale.ITALIAN);
+        DateTimeFormatter complexFormatter =
+            new DateTimeFormatterBuilder().appendText(ChronoField.DAY_OF_MONTH).appendLiteral(". ").appendText(ChronoField.MONTH_OF_YEAR)
+                .appendLiteral(" ").appendText(ChronoField.YEAR).parseCaseInsensitive().toFormatter(Locale.ITALIAN);
 
         System.out.println(date.format(complexFormatter));
+    }
+
+
+    private static class NextWorkingDay implements TemporalAdjuster {
+        @Override
+        public Temporal adjustInto(Temporal temporal) {
+            DayOfWeek dow = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
+            int dayToAdd = 1;
+            if (dow == DayOfWeek.FRIDAY)
+                dayToAdd = 3;
+            if (dow == DayOfWeek.SATURDAY)
+                dayToAdd = 2;
+            return temporal.plus(dayToAdd, ChronoUnit.DAYS);
+        }
     }
 
 }

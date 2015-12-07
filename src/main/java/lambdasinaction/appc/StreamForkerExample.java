@@ -1,12 +1,15 @@
 package lambdasinaction.appc;
 
-import lambdasinaction.chap6.*;
+import lambdasinaction.chap6.Dish;
 
-import static java.util.stream.Collectors.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.reducing;
 import static lambdasinaction.chap6.Dish.menu;
-
-import java.util.*;
-import java.util.stream.*;
 
 public class StreamForkerExample {
 
@@ -17,14 +20,11 @@ public class StreamForkerExample {
     private static void processMenu() {
         Stream<Dish> menuStream = menu.stream();
 
-        StreamForker.Results results = new StreamForker<Dish>(menuStream)
-                .fork("shortMenu", s -> s.map(Dish::getName).collect(joining(", ")))
+        StreamForker.Results results =
+            new StreamForker<Dish>(menuStream).fork("shortMenu", s -> s.map(Dish::getName).collect(joining(", ")))
                 .fork("totalCalories", s -> s.mapToInt(Dish::getCalories).sum())
-                .fork("mostCaloricDish", s -> s.collect(
-                        reducing((d1, d2) -> d1.getCalories() > d2.getCalories() ? d1 : d2))
-                        .get())
-                .fork("dishesByType", s -> s.collect(groupingBy(Dish::getType)))
-                .getResults();
+                .fork("mostCaloricDish", s -> s.collect(reducing((d1, d2) -> d1.getCalories() > d2.getCalories() ? d1 : d2)).get())
+                .fork("dishesByType", s -> s.collect(groupingBy(Dish::getType))).getResults();
 
         String shortMeny = results.get("shortMenu");
         int totalCalories = results.get("totalCalories");

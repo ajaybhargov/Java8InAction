@@ -2,9 +2,9 @@ package lambdasinaction.appa;
 
 import java.util.Arrays;
 
-@Author(name = "Raoul")
-@Author(name = "Mario")
-@Author(name = "Alan")
+@Author (name = "Raoul")
+@Author (name = "Mario")
+@Author (name = "Alan")
 public class Book {
 
     public static void main(String[] args) {

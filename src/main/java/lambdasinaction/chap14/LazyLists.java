@@ -1,13 +1,12 @@
 package lambdasinaction.chap14;
 
-import java.util.function.Supplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class LazyLists {
 
     public static void main(String[] args) {
-        MyList<Integer> l = new MyLinkedList<>(5, new MyLinkedList<>(10,
-                new Empty<Integer>()));
+        MyList<Integer> l = new MyLinkedList<>(5, new MyLinkedList<>(10, new Empty<Integer>()));
 
         System.out.println(l.head());
 
@@ -28,6 +27,23 @@ public class LazyLists {
         // printAll(primes(from(2)));
     }
 
+    public static LazyList<Integer> from(int n) {
+        return new LazyList<Integer>(n, () -> from(n + 1));
+    }
+
+    public static MyList<Integer> primes(MyList<Integer> numbers) {
+        return new LazyList<>(numbers.head(), () -> primes(numbers.tail().filter(n -> n % numbers.head() != 0)));
+    }
+
+    static <T> void printAll(MyList<T> numbers) {
+        if (numbers.isEmpty()) {
+            return;
+        }
+        System.out.println(numbers.head());
+        printAll(numbers.tail());
+    }
+
+
     interface MyList<T> {
         T head();
 
@@ -39,6 +55,7 @@ public class LazyLists {
 
         MyList<T> filter(Predicate<T> p);
     }
+
 
     static class MyLinkedList<T> implements MyList<T> {
         final T head;
@@ -62,10 +79,10 @@ public class LazyLists {
         }
 
         public MyList<T> filter(Predicate<T> p) {
-            return isEmpty() ? this : p.test(head()) ? new MyLinkedList<>(
-                    head(), tail().filter(p)) : tail().filter(p);
+            return isEmpty() ? this : p.test(head()) ? new MyLinkedList<>(head(), tail().filter(p)) : tail().filter(p);
         }
     }
+
 
     static class Empty<T> implements MyList<T> {
         public T head() {
@@ -80,6 +97,7 @@ public class LazyLists {
             return this;
         }
     }
+
 
     static class LazyList<T> implements MyList<T> {
         final T head;
@@ -103,27 +121,9 @@ public class LazyLists {
         }
 
         public MyList<T> filter(Predicate<T> p) {
-            return isEmpty() ? this : p.test(head()) ? new LazyList<>(head(),
-                    () -> tail().filter(p)) : tail().filter(p);
+            return isEmpty() ? this : p.test(head()) ? new LazyList<>(head(), () -> tail().filter(p)) : tail().filter(p);
         }
 
-    }
-
-    public static LazyList<Integer> from(int n) {
-        return new LazyList<Integer>(n, () -> from(n + 1));
-    }
-
-    public static MyList<Integer> primes(MyList<Integer> numbers) {
-        return new LazyList<>(numbers.head(), () -> primes(numbers.tail()
-                .filter(n -> n % numbers.head() != 0)));
-    }
-
-    static <T> void printAll(MyList<T> numbers) {
-        if (numbers.isEmpty()) {
-            return;
-        }
-        System.out.println(numbers.head());
-        printAll(numbers.tail());
     }
 
 }
